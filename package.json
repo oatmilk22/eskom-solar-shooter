@@ -1,0 +1,15 @@
+{
+  "name": "eskom-solar-shooter",
+  "version": "1.0.0",
+  "description": "A 3D first-person shooter game where you shoot solar panels at Eskom",
+  "main": "game.js",
+  "scripts": {
+    "start": "http-server -c-1"
+  },
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+} 
