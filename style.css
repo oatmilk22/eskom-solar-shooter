@@ -26,4 +26,82 @@ body {
 #ammo {
     top: 20px;
     right: 20px;
+}
+
+#minimap-container {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 200px;
+    height: 200px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 2px solid white;
+    border-radius: 4px;
+}
+
+#minimap {
+    width: 100%;
+    height: 100%;
+}
+
+#crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10;
+    --gap: 8px;
+}
+
+#crosshair-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: black;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+}
+
+#crosshair-line {
+    position: absolute;
+    background: black;
+    border-radius: 1px;
+}
+
+#crosshair-line.top {
+    left: 50%;
+    top: calc(50% - var(--gap) - 16px);
+    width: 4px;
+    height: 16px;
+    transform: translateX(-50%);
+}
+
+#crosshair-line.bottom {
+    left: 50%;
+    top: calc(50% + var(--gap));
+    width: 4px;
+    height: 16px;
+    transform: translateX(-50%);
+}
+
+#crosshair-line.left {
+    top: 50%;
+    left: calc(50% - var(--gap) - 16px);
+    width: 16px;
+    height: 4px;
+    transform: translateY(-50%);
+}
+
+#crosshair-line.right {
+    top: 50%;
+    left: calc(50% + var(--gap));
+    width: 16px;
+    height: 4px;
+    transform: translateY(-50%);
 } 
