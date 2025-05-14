@@ -25,83 +25,914 @@ body {
 
 #ammo {
     top: 20px;
-    right: 20px;
+    right: 240px;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 2px solid #ffcc00;
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffcc00;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+#damage-counter {
+    position: absolute;
+    top: 60px;
+    left: 20px;
+    color: #ff9900;
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    transition: transform 0.1s ease;
 }
 
 #minimap-container {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
+    top: 20px;
+    right: 20px;
     width: 200px;
     height: 200px;
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 2px solid white;
-    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(0, 204, 255, 0.8);
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+#minimap-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle, rgba(0, 204, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+#minimap-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.8), transparent);
+    animation: minimap-scan 4s linear infinite;
+    z-index: 3;
+}
+
+@keyframes minimap-scan {
+    0% { top: 0; }
+    50% { top: 100%; }
+    50.1% { top: 0; }
+    100% { top: 0; }
 }
 
 #minimap {
     width: 100%;
     height: 100%;
+    image-rendering: pixelated;
 }
 
-#crosshair {
+/* Common crosshair styles */
+.crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    pointer-events: none; /* Ensure it doesn't block clicks */
+}
+
+/* Crosshair dot */
+.crosshair-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background-color: #ffffff; /* White color */
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+/* Crosshair lines */
+.crosshair-line {
+    position: absolute;
+    background-color: #ffffff; /* White color */
+}
+
+/* Line positions for normal crosshair (with dot) */
+.crosshair-line.top {
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 15px;
+    transform: translateX(-50%);
+}
+
+.crosshair-line.bottom {
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    height: 15px;
+    transform: translateX(-50%);
+}
+
+.crosshair-line.left {
+    top: 50%;
+    left: 0;
+    width: 15px;
+    height: 2px;
+    transform: translateY(-50%);
+}
+
+.crosshair-line.right {
+    top: 50%;
+    right: 0;
+    width: 15px;
+    height: 2px;
+    transform: translateY(-50%);
+}
+
+/* Aiming crosshair specific styles (simple plus) */
+#aiming-crosshair .crosshair-line {
+    background-color: #ffffff;
+}
+
+/* Make the aiming crosshair a simple plus sign */
+#aiming-crosshair .crosshair-line.top {
+    top: 50%;
+    height: 20px;
+    transform: translate(-50%, -100%);
+}
+
+#aiming-crosshair .crosshair-line.bottom {
+    top: 50%;
+    height: 20px;
+    transform: translate(-50%, 0%);
+}
+
+#aiming-crosshair .crosshair-line.left {
+    left: 50%;
+    width: 20px;
+    transform: translate(-100%, -50%);
+}
+
+#aiming-crosshair .crosshair-line.right {
+    left: 50%;
+    width: 20px;
+    transform: translate(0%, -50%);
+}
+
+/* Fortnite-style shotgun crosshair */
+.weapon-shotgun #normal-crosshair {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+}
+
+.weapon-shotgun #normal-crosshair .crosshair-dot {
+    width: 6px;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.9); /* White dot in center */
+}
+
+/* Fortnite shotgun crosshair has 4 L-shaped corners */
+.weapon-shotgun #normal-crosshair .crosshair-line {
+    display: none; /* Hide default lines */
+}
+
+/* Create the 4 corner brackets */
+.weapon-shotgun #normal-crosshair::before,
+.weapon-shotgun #normal-crosshair::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-radius: 0;
+}
+
+/* Top-left corner */
+.weapon-shotgun #normal-crosshair::before {
+    top: 20px;
+    left: 20px;
+    border-right: none;
+    border-bottom: none;
+}
+
+/* Bottom-right corner */
+.weapon-shotgun #normal-crosshair::after {
+    bottom: 20px;
+    right: 20px;
+    border-left: none;
+    border-top: none;
+}
+
+/* Add the other two corners using pseudo-elements on the lines */
+.weapon-shotgun #normal-crosshair .crosshair-line.top::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-left: none;
+    border-bottom: none;
+    top: 20px;
+    right: 20px;
+    display: block;
+}
+
+.weapon-shotgun #normal-crosshair .crosshair-line.bottom::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-right: none;
+    border-top: none;
+    bottom: 20px;
+    left: 20px;
+    display: block;
+}
+
+/* Add pellet dots to show spread pattern */
+.weapon-shotgun #normal-crosshair .pellet-dots {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+/* Individual pellet dots */
+.weapon-shotgun #normal-crosshair .pellet-dot {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: rgba(255, 165, 0, 0.7);
+    border-radius: 50%;
+}
+
+/* Fortnite-style shotgun aiming crosshair - tighter spread */
+.weapon-shotgun #aiming-crosshair {
+    width: 60px;
+    height: 60px;
+}
+
+/* Hide default crosshair lines */
+.weapon-shotgun #aiming-crosshair .crosshair-line {
+    display: none;
+}
+
+/* Create the 4 corner brackets - smaller and closer when aiming */
+.weapon-shotgun #aiming-crosshair::before,
+.weapon-shotgun #aiming-crosshair::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid white;
+    border-radius: 0;
+}
+
+/* Top-left corner */
+.weapon-shotgun #aiming-crosshair::before {
+    top: 15px;
+    left: 15px;
+    border-right: none;
+    border-bottom: none;
+}
+
+/* Bottom-right corner */
+.weapon-shotgun #aiming-crosshair::after {
+    bottom: 15px;
+    right: 15px;
+    border-left: none;
+    border-top: none;
+}
+
+/* Add the other two corners */
+.weapon-shotgun #aiming-crosshair .crosshair-line.top::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid white;
+    border-left: none;
+    border-bottom: none;
+    top: 15px;
+    right: 15px;
+    display: block;
+}
+
+.weapon-shotgun #aiming-crosshair .crosshair-line.bottom::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid white;
+    border-right: none;
+    border-top: none;
+    bottom: 15px;
+    left: 15px;
+    display: block;
+}
+
+/* Sniper normal crosshair - precision dot */
+.weapon-sniper #normal-crosshair .crosshair-line {
+    background-color: rgba(0, 191, 255, 0.9); /* Light blue for sniper */
+}
+
+.weapon-sniper #normal-crosshair .crosshair-dot {
+    width: 2px;
+    height: 2px;
+    background-color: rgba(0, 191, 255, 0.9);
+}
+
+/* Realistic sniper scope overlay */
+.sniper-scope-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Scope semi-transparent edges */
+.scope-edge {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent black */
+}
+
+.scope-edge.top {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(50% - 150px);
+}
+
+.scope-edge.bottom {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: calc(50% - 150px);
+}
+
+.scope-edge.left {
+    top: calc(50% - 150px);
+    left: 0;
+    width: calc(50% - 150px);
+    height: 300px;
+}
+
+.scope-edge.right {
+    top: calc(50% - 150px);
+    right: 0;
+    width: calc(50% - 150px);
+    height: 300px;
+}
+
+/* Scope circle */
+.scope-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.3); /* Semi-transparent shadow */
+    border: 1px solid rgba(0, 0, 0, 0.6);
+}
+
+/* Scope reticle */
+.scope-reticle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Vertical and horizontal lines */
+.scope-line {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.scope-line.vertical {
+    width: 1px;
+    height: 300px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.scope-line.horizontal {
+    width: 300px;
+    height: 1px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Distance markers */
+.scope-marker {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Scope zoom effect - blur outside the scope */
+.scope-blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(2px);
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* Scope center dot */
+.scope-center {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: #000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+}
+
+/* Mil-dot markers */
+.mil-dot {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 50%;
+}
+
+/* Pickup notification */
+#pickup-notification {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 18px;
+    z-index: 1000;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+#pickup-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#pickup-text {
+    font-family: 'Arial', sans-serif;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Horizontal mil-dots */
+.mil-dot.h1 { left: calc(50% + 30px); top: 50%; transform: translate(-50%, -50%); }
+.mil-dot.h2 { left: calc(50% + 60px); top: 50%; transform: translate(-50%, -50%); }
+.mil-dot.h3 { left: calc(50% + 90px); top: 50%; transform: translate(-50%, -50%); }
+.mil-dot.h4 { left: calc(50% - 30px); top: 50%; transform: translate(-50%, -50%); }
+.mil-dot.h5 { left: calc(50% - 60px); top: 50%; transform: translate(-50%, -50%); }
+.mil-dot.h6 { left: calc(50% - 90px); top: 50%; transform: translate(-50%, -50%); }
+
+/* Vertical mil-dots */
+.mil-dot.v1 { left: 50%; top: calc(50% + 30px); transform: translate(-50%, -50%); }
+.mil-dot.v2 { left: 50%; top: calc(50% + 60px); transform: translate(-50%, -50%); }
+.mil-dot.v3 { left: 50%; top: calc(50% + 90px); transform: translate(-50%, -50%); }
+.mil-dot.v4 { left: 50%; top: calc(50% - 30px); transform: translate(-50%, -50%); }
+.mil-dot.v5 { left: 50%; top: calc(50% - 60px); transform: translate(-50%, -50%); }
+.mil-dot.v6 { left: 50%; top: calc(50% - 90px); transform: translate(-50%, -50%); }
+
+.shotgun-crosshair::before {
+    content: '';
     position: absolute;
     top: 50%;
     left: 50%;
     width: 40px;
     height: 40px;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 10;
-    --gap: 8px;
-}
-
-#crosshair-dot {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 10px;
-    height: 10px;
-    background: black;
+    border: 2px dotted rgba(255, 255, 255, 0.8);
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    z-index: 11;
 }
 
-#crosshair-line {
+.shotgun-crosshair::after {
+    content: '';
     position: absolute;
-    background: black;
-    border-radius: 1px;
-}
-
-#crosshair-line.top {
-    left: 50%;
-    top: calc(50% - var(--gap) - 16px);
-    width: 4px;
-    height: 16px;
-    transform: translateX(-50%);
-}
-
-#crosshair-line.bottom {
-    left: 50%;
-    top: calc(50% + var(--gap));
-    width: 4px;
-    height: 16px;
-    transform: translateX(-50%);
-}
-
-#crosshair-line.left {
     top: 50%;
-    left: calc(50% - var(--gap) - 16px);
-    width: 16px;
-    height: 4px;
-    transform: translateY(-50%);
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
 }
 
-#crosshair-line.right {
-    top: 50%;
-    left: calc(50% + var(--gap));
-    width: 16px;
+/* Sprint crosshair - larger and more spread out */
+.sprint-crosshair #crosshair-line {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.sprint-crosshair #crosshair-dot {
+    width: 4px;
     height: 4px;
-    transform: translateY(-50%);
-} 
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Sniper crosshair when not aiming */
+.sniper-crosshair #crosshair-line {
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 40px !important;
+    height: 2px !important;
+}
+
+.sniper-crosshair #crosshair-line.vertical {
+    width: 2px !important;
+    height: 40px !important;
+}
+
+.sniper-crosshair #crosshair-dot {
+    width: 3px;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Sniper scope */
+.sniper-scope {
+    --scope-size: 200px;
+    width: var(--scope-size) !important;
+    height: var(--scope-size) !important;
+}
+
+/* Main scope circle */
+.sniper-scope::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--scope-size) - 2px);
+    height: calc(var(--scope-size) - 2px);
+    border: 1.5px solid rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 5px rgba(0, 150, 255, 0.5);
+}
+
+/* Darkened area outside scope */
+.sniper-scope::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.8);
+}
+
+/* Hide default crosshair lines */
+.sniper-scope #crosshair-line {
+    display: none;
+}
+
+/* Vertical crosshair line */
+.sniper-scope #crosshair-dot {
+    width: 2px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0;
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.7);
+}
+
+/* Horizontal crosshair line */
+.sniper-scope #crosshair-dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.9);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.7);
+}
+
+/* Red dot in center */
+.sniper-scope #crosshair-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 0, 0, 0.8);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 4px rgba(255, 0, 0, 0.8);
+}
+
+/* Range markers */
+.sniper-scope::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--scope-size) - 2px);
+    height: calc(var(--scope-size) - 2px);
+    border: 1.5px solid rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Inner range circle */
+.sniper-scope > div:first-child::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--scope-size) * 0.7);
+    height: calc(var(--scope-size) * 0.7);
+    border: 1px dashed rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Tick marks on scope edges */
+.sniper-scope > div:first-child::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--scope-size) - 10px);
+    height: calc(var(--scope-size) - 10px);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: repeating-conic-gradient(
+        rgba(255, 255, 255, 0) 0deg,
+        rgba(255, 255, 255, 0) 5deg,
+        rgba(255, 255, 255, 0.5) 5deg,
+        rgba(255, 255, 255, 0.5) 6deg,
+        rgba(255, 255, 255, 0) 6deg,
+        rgba(255, 255, 255, 0) 15deg
+    );
+}
+
+/* Weapon Overlay */
+#weapon-overlay {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    height: 200px;
+    pointer-events: none;
+    z-index: 100;
+    transform-origin: bottom right;
+    animation: weaponBob 3s ease-in-out infinite;
+}
+
+@keyframes weaponBob {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-2px, -3px) rotate(-0.5deg); }
+    50% { transform: translate(0, 0) rotate(0deg); }
+    75% { transform: translate(2px, -2px) rotate(0.5deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes weaponRecoil {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    20% { transform: translate(-10px, 5px) rotate(-2deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.weapon-recoil {
+    animation: weaponRecoil 0.2s ease-out;
+}
+
+.weapon-svg {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Weapon selection UI */
+#weapon-selector {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    padding: 10px;
+    min-width: 200px;
+    z-index: 200;
+}
+
+.weapon-slot {
+    padding: 8px 12px;
+    background: rgba(40, 40, 40, 0.7);
+    border-radius: 4px;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.weapon-slot:hover {
+    background: rgba(60, 60, 60, 0.8);
+}
+
+.weapon-slot.active {
+    background: rgba(80, 80, 80, 0.9);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.weapon-key {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    text-align: center;
+    line-height: 20px;
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.weapon-ammo {
+    margin-left: auto;
+    opacity: 1;
+    font-size: 14px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 3px 8px;
+    border-radius: 10px;
+    color: #ffcc00;
+    font-weight: bold;
+    border: 1px solid rgba(255, 204, 0, 0.5);
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.2);
+}
+
+/* Damage Indicator */
+#damage-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 500;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#damage-indicator.active {
+    opacity: 1;
+    animation: damage-flash 0.5s ease-out;
+}
+
+@keyframes damage-flash {
+    0% { background-color: rgba(255, 0, 0, 0.4); }
+    100% { background-color: rgba(255, 0, 0, 0); }
+}
+
+/* Health Bar */
+#health-bar-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Double Jump Indicator */
+#double-jump-container {
+    position: fixed;
+    top: 20px;
+    left: calc(50% + 100px);
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 2px solid #00ccff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+}
+
+#double-jump-icon {
+    font-size: 24px;
+    color: #ffffff;
+    z-index: 2;
+    text-shadow: 0 0 5px rgba(0, 204, 255, 0.8);
+}
+
+#double-jump-cooldown {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background-color: rgba(255, 0, 0, 0.5);
+    transition: height 0.1s linear;
+    z-index: 1;
+}
+
+.double-jump-ready {
+    animation: pulse 2s infinite;
+}
+
+.double-jump-active {
+    border-color: #ffcc00 !important;
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.8) !important;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+#health-bar {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 200, 0, 0.7);
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* Damage Numbers */
+.damage-number {
+    position: absolute;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    user-select: none;
+    z-index: 1000;
+    animation: damage-float 1s ease-out forwards;
+}
+
+.damage-number.headshot {
+    color: #ff5555;
+    font-size: 20px;
+}
+
+@keyframes damage-float {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+}

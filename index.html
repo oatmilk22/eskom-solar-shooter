@@ -18,18 +18,131 @@
 <body>
     <div id="game-container">
         <div id="score">Score: 0</div>
-        <div id="ammo">Solar Panels: 10</div>
+        <div id="ammo">Pistol: 12/12</div>
+        <div id="damage-counter">Damage: 0</div>
+        <div id="damage-indicator"></div>
+        <!-- Health bar removed - now using the one in the bottom middle -->
+        <div id="double-jump-container">
+            <div id="double-jump-icon">🚀</div>
+            <div id="double-jump-cooldown"></div>
+        </div>
         <div id="minimap-container">
             <canvas id="minimap"></canvas>
         </div>
-        <div id="crosshair">
-            <div id="crosshair-dot"></div>
-            <div id="crosshair-line" class="top"></div>
-            <div id="crosshair-line" class="bottom"></div>
-            <div id="crosshair-line" class="left"></div>
-            <div id="crosshair-line" class="right"></div>
+        <!-- Crosshair elements removed to make room for health/armor bars -->
+        
+        <!-- Crosshair elements for aiming and normal view -->
+        <div id="normal-crosshair" class="crosshair">
+            <div class="crosshair-dot"></div>
+            <div class="crosshair-line top"></div>
+            <div class="crosshair-line bottom"></div>
+            <div class="crosshair-line left"></div>
+            <div class="crosshair-line right"></div>
+        </div>
+        
+        <div id="aiming-crosshair" class="crosshair" style="display: none;">
+            <div class="crosshair-line top"></div>
+            <div class="crosshair-line bottom"></div>
+            <div class="crosshair-line left"></div>
+            <div class="crosshair-line right"></div>
+        </div>
+        
+        <!-- Shotgun pellet dots container -->
+        <div id="shotgun-pellets" class="pellet-dots" style="display: none;"></div>
+        
+        <!-- Sniper scope overlay -->
+        <div id="sniper-scope-overlay" class="sniper-scope-overlay">
+            <!-- Black edges around the scope -->
+            <div class="scope-edge top"></div>
+            <div class="scope-edge bottom"></div>
+            <div class="scope-edge left"></div>
+            <div class="scope-edge right"></div>
+            
+            <!-- Scope circle -->
+            <div class="scope-circle">
+                <!-- Scope reticle -->
+                <div class="scope-reticle">
+                    <div class="scope-line vertical"></div>
+                    <div class="scope-line horizontal"></div>
+                    <div class="scope-center"></div>
+                    
+                    <!-- Mil-dots for distance estimation -->
+                    <div class="mil-dot h1"></div>
+                    <div class="mil-dot h2"></div>
+                    <div class="mil-dot h3"></div>
+                    <div class="mil-dot h4"></div>
+                    <div class="mil-dot h5"></div>
+                    <div class="mil-dot h6"></div>
+                    
+                    <div class="mil-dot v1"></div>
+                    <div class="mil-dot v2"></div>
+                    <div class="mil-dot v3"></div>
+                    <div class="mil-dot v4"></div>
+                    <div class="mil-dot v5"></div>
+                    <div class="mil-dot v6"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Pickup notification container -->
+        <div id="pickup-notification" style="display: none;">
+            <div id="pickup-icon"></div>
+            <div id="pickup-text"></div>
+        </div>
+        
+        <div id="weapon-overlay">
+            <!-- Pistol (Blue) -->
+            <svg id="pistol-overlay" class="weapon-svg" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                <path d="M120,70 L160,70 L170,80 L170,100 L160,110 L120,110 L120,70" fill="#333" stroke="#000" stroke-width="2" />
+                <path d="M80,80 L120,80 L120,100 L80,100 L80,80" fill="#444" stroke="#000" stroke-width="2" />
+                <path d="M40,85 L80,85 L80,95 L40,95 L40,85" fill="#2266cc" stroke="#000" stroke-width="2" />
+                <path d="M120,90 L130,90 L130,120 L120,120 L120,90" fill="#222" stroke="#000" stroke-width="2" />
+            </svg>
+            
+            <!-- AR-15 (Green) -->
+            <svg id="ar-overlay" class="weapon-svg" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30,80 L170,80 L180,85 L180,95 L170,100 L30,100 L30,80" fill="#333" stroke="#000" stroke-width="2" />
+                <path d="M60,100 L80,100 L80,120 L60,120 L60,100" fill="#222" stroke="#000" stroke-width="2" />
+                <path d="M100,100 L120,100 L120,110 L100,110 L100,100" fill="#44aa44" stroke="#000" stroke-width="2" />
+                <path d="M140,75 L150,75 L150,80 L140,80 L140,75" fill="#555" stroke="#000" stroke-width="2" />
+                <path d="M30,85 L40,85 L40,95 L30,95 L30,85" fill="#555" stroke="#000" stroke-width="2" />
+            </svg>
+            
+            <!-- Shotgun (Orange) -->
+            <svg id="shotgun-overlay" class="weapon-svg" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20,85 L160,85 L160,95 L20,95 L20,85" fill="#333" stroke="#000" stroke-width="2" />
+                <path d="M160,80 L180,80 L180,100 L160,100 L160,80" fill="#222" stroke="#000" stroke-width="2" />
+                <path d="M60,95 L100,95 L100,110 L60,110 L60,95" fill="#ee7722" stroke="#000" stroke-width="2" />
+                <path d="M20,80 L40,80 L40,85 L20,85 L20,80" fill="#555" stroke="#000" stroke-width="2" />
+                <path d="M20,95 L40,95 L40,100 L20,100 L20,95" fill="#555" stroke="#000" stroke-width="2" />
+            </svg>
+            
+            <!-- Sniper (Blue) -->
+            <svg id="sniper-overlay" class="weapon-svg" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10,85 L180,85 L180,95 L10,95 L10,85" fill="#333" stroke="#000" stroke-width="2" />
+                <path d="M100,75 L140,75 L140,85 L100,85 L100,75" fill="#3377cc" stroke="#000" stroke-width="2" />
+                <path d="M60,95 L80,95 L80,115 L60,115 L60,95" fill="#222" stroke="#000" stroke-width="2" />
+                <circle cx="120" cy="80" r="10" fill="#111" stroke="#000" stroke-width="2" />
+                <circle cx="120" cy="80" r="6" fill="#3377cc" stroke="#000" stroke-width="1" />
+            </svg>
+        </div>
+        <div id="weapon-selector">
+            <div class="weapon-slot active" data-weapon="PISTOL">
+                <span class="weapon-key">1</span>Pistol <span class="weapon-ammo">12/12</span>
+            </div>
+            <div class="weapon-slot" data-weapon="AR">
+                <span class="weapon-key">2</span>Assault Rifle <span class="weapon-ammo">30/30</span>
+            </div>
+            <div class="weapon-slot" data-weapon="SHOTGUN">
+                <span class="weapon-key">3</span>Shotgun <span class="weapon-ammo">8/8</span>
+            </div>
+            <div class="weapon-slot" data-weapon="SNIPER">
+                <span class="weapon-key">4</span>Sniper Rifle <span class="weapon-ammo">7/7</span>
+            </div>
         </div>
     </div>
     <script type="module" src="game.js"></script>
+    <script src="minimap.js"></script>
+    <script src="chat-system.js"></script>
+    <script type="module" src="double-jump-handler.js"></script>
 </body>
-</html> 
+</html>
